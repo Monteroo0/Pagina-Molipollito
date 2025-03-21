@@ -1,11 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Metodo de pago</title>
+    <title>Métodos de Pago</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        .payment-options { margin: 20px; }
+        button { padding: 10px 20px; margin: 10px; cursor: pointer; }
+        #card-element { width: 300px; margin: 20px auto; padding: 10px; border: 1px solid #ccc; }
+    </style>
 </head>
 <body>
-    
+    <h1>Finalizar Pedido</h1>
+    <div>Total: $<span id="total">25.00</span></div>
+    <div class="payment-options">
+        <button onclick="selectCash()">Pagar en Efectivo</button>
+        <button onclick="selectCard()">Pagar con Tarjeta</button>
+    </div>
+    <div id="card-payment" style="display: none;">
+        <div id="card-element"></div>
+        <button onclick="payWithCard()">Confirmar Pago</button>
+        <div id="card-errors" style="color: red;"></div>
+    </div>
+
+    <script>
+        const stripe = Stripe('pk_test_TU_CLAVE_PUBLICA_DE_STRIPE'); // Reemplaza con tu clave pública de Stripe
+        const elements = stripe.elements();
+        const card = elements.create('card');
+        card.mount('#card-element');
+
+        card.on('change', (event) => {
+            const displayError = document.getElementById('card-errors');
+            displayError.textContent = event.error ? event.error.message : '';
+        });
+
+        function selectCash() {
+            fetch('/pay-cash', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ total: document.getElementById('total').textContent })
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.error('Error:', error));
+        }
+
+        function selectCard() {
+            document.getElementById('card-payment').style.display = 'block';
+        }
+
+        async function payWithCard() {
+            const total = document.getElementById('total').textContent;
+            const { paymentIntent, error } = await stripe.createPaymentMethod({
+                type: 'card',
+                card: card
+            });
+
+            if (error) {
+                document.getElementById('card-errors').textContent = error.message;
+            } else {
+                fetch('/pay-card', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ paymentMethodId: paymentIntent.id, amount: total * 100 }) // En centavos
+                })
+                .then(response => response.json())
+                .then(data => alert(data.message))
+                .catch(error => console.error('Error:', error));
+            }
+        }
+    </script>
 </body>
 </html>
