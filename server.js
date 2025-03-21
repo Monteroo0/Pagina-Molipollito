@@ -9,7 +9,8 @@ app.use(express.static('public')); // Sirve el frontend desde la carpeta 'public
 // Ruta para pago en efectivo
 app.post('/pay-cash', (req, res) => {
     const { total } = req.body;
-    // Aquí puedes guardar el pedido en la base de datos con estado "pago pendiente"
+    // Aquí pued
+    es guardar el pedido en la base de datos con estado "pago pendiente"
     console.log(`Pedido registrado para pago en efectivo: $${total}`);
     res.json({ message: 'Pedido registrado. Paga al recibir.' });
 });
