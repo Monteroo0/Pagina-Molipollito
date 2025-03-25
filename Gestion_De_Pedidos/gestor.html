@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Pedidos de Restaurante</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Pedidos de Molipollito</h1>
+        <div class="menu">
+            <h2>Menú</h2>
+            <ul id="menu-list">
+                <li>
+                    <span>Sopa de pollo - $20,000 COP</span>
+                    <button onclick="addOrder(1, 1)">Agregar</button>
+                </li>
+                <li>
+                    <span>Moliensalada - $18,000 COP</span>
+                    <button onclick="addOrder(2, 1)">Agregar</button>
+                </li>
+                <li>
+                    <span>Molipollo asado - $48,000 COP</span>
+                    <button onclick="addOrder(3, 1)">Agregar</button>
+                </li>
+            </ul>
+        </div>
+        <div class="orders">
+            <h2>Pedidos</h2>
+            <ul id="orders-list"></ul>
+        </div>
+        <div class="controls">
+            <h2>Controles</h2>
+            <input type="number" id="discount-input" placeholder="Descuento (%)" min="0" max="100">
+            <button onclick="applyDiscount()">Aplicar Descuento</button>
+            <h3>Total: $<span id="total">0</span></h3>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
